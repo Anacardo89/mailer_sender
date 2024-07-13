@@ -25,12 +25,12 @@ type RabbitConfig struct {
 	RabbitPass    string `yaml:"rabbit_pass"`
 	RabbitHost    string `yaml:"rabbit_host"`
 	RabbitPort    string `yaml:"rabbit_port"`
-	QueueRegister string `yaml:"queue_ragister`
+	QueueRegister string `yaml:"queue_register"`
 }
 
 func loadMailConfig() (*MailConfig, error) {
 	var mailConfig *MailConfig
-	err := yaml.Unmarshal(mailYaml, mailConfig)
+	err := yaml.Unmarshal(mailYaml, &mailConfig)
 	if err != nil {
 		return nil, err
 	}

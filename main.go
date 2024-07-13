@@ -92,7 +92,7 @@ func main() {
 	go func() {
 		for d := range msgs {
 			var regData *RegisterData
-			err = json.Unmarshal(d.Body, regData)
+			err = json.Unmarshal(d.Body, &regData)
 			if err != nil {
 				logger.Error.Println(err)
 			}
