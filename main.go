@@ -103,13 +103,16 @@ func main() {
 			mailAddress := fmt.Sprintf("%s:%s", mailConfig.SmtpHost, mailConfig.SmtpPort)
 			var to []string
 			to = append(to, regData.Email)
-			message := fmt.Sprintf("%s\r\n\r\n%s\r\n",
-				regData.Subject, regData.MailBody)
+			fromHeader := fmt.Sprintf("From: %s\n", mailConfig.PublicSender)
+			toHeader := fmt.Sprintf("To: %s\n", to)
+			subject := fmt.Sprintf("Subject: %s\n", regData.Subject)
+			body := regData.MailBody
+			message := []byte(fromHeader + toHeader + subject + "\n" + body)
 			err = smtp.SendMail(mailAddress,
 				auth,
 				mailConfig.PublicSender,
 				to,
-				[]byte(message))
+				message)
 			if err != nil {
 				fmt.Println(err)
 				return
