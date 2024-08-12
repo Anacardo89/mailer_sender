@@ -15,9 +15,9 @@ type Config struct {
 	Queues     []string `yaml:"queues"`
 }
 
-func (c *Config) Connect() *amqp.Connection {
+func (r *Config) Connect() *amqp.Connection {
 	url := fmt.Sprintf("amqp://%s:%s@%s%s/",
-		c.RabbitUser, c.RabbitPass, c.RabbitHost, c.RabbitPort)
+		r.RabbitUser, r.RabbitPass, r.RabbitHost, r.RabbitPort)
 	conn, err := amqp.Dial(url)
 	if err != nil {
 		logger.Error.Fatal(err)
@@ -25,15 +25,15 @@ func (c *Config) Connect() *amqp.Connection {
 	return conn
 }
 
-func (c *Config) DeclareQueues(ch *amqp.Channel) {
-	for _, queueName := range c.Queues {
+func (r *Config) DeclareQueues(ch *amqp.Channel) {
+	for _, queue := range r.Queues {
 		_, err := ch.QueueDeclare(
-			queueName, // name
-			true,      // durable
-			false,     // delete when unused
-			false,     // exclusive
-			false,     // no-wait
-			nil,       // arguments
+			queue, // name
+			true,  // durable
+			false, // delete when unused
+			false, // exclusive
+			false, // no-wait
+			nil,   // arguments
 		)
 		if err != nil {
 			logger.Error.Fatal(err)
@@ -41,8 +41,8 @@ func (c *Config) DeclareQueues(ch *amqp.Channel) {
 	}
 }
 
-func (c *Config) StartWorkers(conn *amqp.Connection, ch *amqp.Channel, msgs chan<- amqp.Delivery) {
-	for _, queue := range c.Queues {
+func (r *Config) StartWorkers(conn *amqp.Connection, ch *amqp.Channel, msgs chan<- amqp.Delivery) {
+	for _, queue := range r.Queues {
 		go func(q string) {
 			worker(ch, q, msgs)
 		}(queue)
