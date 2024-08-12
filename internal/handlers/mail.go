@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/smtp"
 
-	"github.com/Anacardo89/mailer_sender.git/internal/config"
-	"github.com/Anacardo89/mailer_sender.git/internal/logger"
+	"github.com/Anacardo89/mailer_sender/internal/config"
+	"github.com/Anacardo89/mailer_sender/internal/logger"
 	"github.com/streadway/amqp"
 )
 

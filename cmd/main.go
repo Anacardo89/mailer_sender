@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"github.com/Anacardo89/mailer_sender.git/internal/config"
-	"github.com/Anacardo89/mailer_sender.git/internal/handlers"
-	"github.com/Anacardo89/mailer_sender.git/internal/logger"
+	"github.com/Anacardo89/mailer_sender/internal/config"
+	"github.com/Anacardo89/mailer_sender/internal/handlers"
+	"github.com/Anacardo89/mailer_sender/internal/logger"
 	"github.com/streadway/amqp"
 )
 
@@ -14,14 +14,18 @@ func main() {
 
 	// Rabbit Setup
 	rabbit := config.LoadRabbitConfig()
+
 	conn := rabbit.Connect()
 	defer conn.Close()
+
 	ch, err := conn.Channel()
 	if err != nil {
 		logger.Error.Fatal(err)
 	}
 	defer ch.Close()
+
 	rabbit.DeclareQueues(ch)
+
 	msgs := make(chan amqp.Delivery)
 	rabbit.StartWorkers(conn, ch, msgs)
 

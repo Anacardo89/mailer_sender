@@ -1,4 +1,4 @@
-module github.com/Anacardo89/mailer_sender.git
+module github.com/Anacardo89/mailer_sender
 
 go 1.22.4
 
