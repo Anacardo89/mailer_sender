@@ -3,9 +3,9 @@ package config
 import (
 	_ "embed"
 
-	"github.com/Anacardo89/mailer_sender.git/internal/logger"
-	"github.com/Anacardo89/mailer_sender.git/internal/mail"
-	"github.com/Anacardo89/mailer_sender.git/internal/rabbitmq"
+	"github.com/Anacardo89/mailer_sender/internal/logger"
+	"github.com/Anacardo89/mailer_sender/internal/mail"
+	"github.com/Anacardo89/mailer_sender/internal/rabbitmq"
 	"gopkg.in/yaml.v2"
 )
 
