@@ -1,47 +1,12 @@
 package rabbitmq
 
 import (
-	"fmt"
-
-	"github.com/Anacardo89/mailer_sender/internal/logger"
+	"github.com/Anacardo89/mailer_sender/pkg/logger"
+	"github.com/Anacardo89/mailer_sender/pkg/rabbit"
 	"github.com/streadway/amqp"
 )
 
-type Config struct {
-	RabbitUser string   `yaml:"rabbit_user"`
-	RabbitPass string   `yaml:"rabbit_pass"`
-	RabbitHost string   `yaml:"rabbit_host"`
-	RabbitPort string   `yaml:"rabbit_port"`
-	Queues     []string `yaml:"queues"`
-}
-
-func (r *Config) Connect() *amqp.Connection {
-	url := fmt.Sprintf("amqp://%s:%s@%s%s/",
-		r.RabbitUser, r.RabbitPass, r.RabbitHost, r.RabbitPort)
-	conn, err := amqp.Dial(url)
-	if err != nil {
-		logger.Error.Fatal(err)
-	}
-	return conn
-}
-
-func (r *Config) DeclareQueues(ch *amqp.Channel) {
-	for _, queue := range r.Queues {
-		_, err := ch.QueueDeclare(
-			queue, // name
-			true,  // durable
-			false, // delete when unused
-			false, // exclusive
-			false, // no-wait
-			nil,   // arguments
-		)
-		if err != nil {
-			logger.Error.Fatal(err)
-		}
-	}
-}
-
-func (r *Config) StartWorkers(conn *amqp.Connection, ch *amqp.Channel, msgs chan<- amqp.Delivery) {
+func StartWorkers(r *rabbit.Config, conn *amqp.Connection, ch *amqp.Channel, msgs chan<- amqp.Delivery) {
 	for _, queue := range r.Queues {
 		go func(q string) {
 			worker(ch, q, msgs)

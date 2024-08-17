@@ -7,8 +7,8 @@ import (
 	"html/template"
 	"net/smtp"
 
-	"github.com/Anacardo89/mailer_sender/internal/logger"
 	"github.com/Anacardo89/mailer_sender/internal/mail"
+	"github.com/Anacardo89/mailer_sender/pkg/logger"
 	"github.com/streadway/amqp"
 )
 
@@ -25,7 +25,8 @@ func SendRegisterEmail(d amqp.Delivery, m *mail.Config, c *smtp.Client, a *smtp.
 		logger.Error.Println(err)
 		return
 	}
-	err = m.ValidateMail(*c, regData.Email)
+	logger.Info.Println(regData.Email)
+	err = m.ValidateMail(c, regData.Email)
 	if err != nil {
 		logger.Error.Println(err)
 		return
