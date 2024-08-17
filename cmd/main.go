@@ -59,6 +59,8 @@ func main() {
 			switch msg.RoutingKey {
 			case "register_email":
 				handlers.SendRegisterEmail(msg, mail, client, &auth)
+			case "password_recover_email":
+				handlers.SendPasswordRecoveryEmail(msg, mail, client, &auth)
 			}
 		}(msg)
 	}

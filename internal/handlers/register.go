@@ -12,29 +12,28 @@ import (
 	"github.com/streadway/amqp"
 )
 
-type RegisterData struct {
+type Register struct {
 	Email string `json:"email"`
 	User  string `json:"user"`
 	Link  string `json:"link"`
 }
 
 func SendRegisterEmail(d amqp.Delivery, m *mail.Config, c *smtp.Client, a *smtp.Auth) {
-	var regData *RegisterData
-	err := json.Unmarshal(d.Body, &regData)
+	var mailData *Register
+	err := json.Unmarshal(d.Body, &mailData)
 	if err != nil {
 		logger.Error.Println(err)
 		return
 	}
-	logger.Info.Println(regData.Email)
-	err = m.ValidateMail(c, regData.Email)
+	err = m.ValidateMail(c, mailData.Email)
 	if err != nil {
 		logger.Error.Println(err)
 		return
 	}
-	mail_subject, mail_body := buildRegisterEmail(regData)
+	mail_subject, mail_body := buildRegisterEmail(mailData)
 	mailAddress := fmt.Sprintf("%s:%s", m.SmtpHost, m.SmtpPort)
 	var to []string
-	to = append(to, regData.Email)
+	to = append(to, mailData.Email)
 	fromHeader := fmt.Sprintf("From: %s\n", m.SmtpUser)
 	toHeader := fmt.Sprintf("To: %s\n", to)
 	subject := fmt.Sprintf("Subject: %s\n", mail_subject)
@@ -52,7 +51,7 @@ func SendRegisterEmail(d amqp.Delivery, m *mail.Config, c *smtp.Client, a *smtp.
 	d.Ack(false)
 }
 
-func buildRegisterEmail(r *RegisterData) (string, string) {
+func buildRegisterEmail(r *Register) (string, string) {
 	var mbuf bytes.Buffer
 
 	mailSubject, err := template.New("registerSubject").Parse(registerSubject)
