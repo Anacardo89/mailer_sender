@@ -1,6 +1,8 @@
 package mail
 
-import "net/smtp"
+import (
+	"net/smtp"
+)
 
 type Config struct {
 	SmtpHost string `yaml:"smtp_host"`
@@ -9,7 +11,7 @@ type Config struct {
 	SmtpPass string `yaml:"smtp_pass"`
 }
 
-func (m *Config) ValidateMail(client smtp.Client, validate string) error {
+func (m *Config) ValidateMail(client *smtp.Client, validate string) error {
 	err := client.Mail(m.SmtpUser)
 	if err != nil {
 		return err

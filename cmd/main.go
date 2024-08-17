@@ -1,13 +1,15 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
-	"log"
 	"net/smtp"
 
 	"github.com/Anacardo89/mailer_sender/internal/config"
 	"github.com/Anacardo89/mailer_sender/internal/handlers"
-	"github.com/Anacardo89/mailer_sender/internal/logger"
+	"github.com/Anacardo89/mailer_sender/internal/rabbitmq"
+	"github.com/Anacardo89/mailer_sender/pkg/logger"
+
 	"github.com/streadway/amqp"
 )
 
@@ -15,16 +17,20 @@ func main() {
 	logger.CreateLogger()
 
 	// Mail Setup
-	mail, err := config.LoadMailConfig()
-	if err != nil {
-		logger.Error.Fatal(err)
-	}
-	auth := smtp.PlainAuth("", mail.SmtpUser, mail.SmtpPass, mail.SmtpHost)
+	mail := config.LoadMailConfig()
 
 	smtpAddress := fmt.Sprintf("%s:%s",
 		mail.SmtpHost, mail.SmtpPort)
 	client, err := smtp.Dial(smtpAddress)
 	if err != nil {
+		logger.Error.Fatal(err)
+	}
+	defer client.Close()
+	client.StartTLS(&tls.Config{
+		ServerName: mail.SmtpHost,
+	})
+	auth := smtp.PlainAuth("", mail.SmtpUser, mail.SmtpPass, mail.SmtpHost)
+	if err = client.Auth(auth); err != nil {
 		logger.Error.Fatal(err)
 	}
 
@@ -43,7 +49,9 @@ func main() {
 	rabbit.DeclareQueues(ch)
 
 	msgs := make(chan amqp.Delivery)
-	rabbit.StartWorkers(conn, ch, msgs)
+	rabbitmq.StartWorkers(rabbit, conn, ch, msgs)
+
+	fmt.Println(" [*] Waiting for messages. To exit press CTRL+C")
 
 	forever := make(chan struct{})
 	for msg := range msgs {
@@ -54,6 +62,5 @@ func main() {
 			}
 		}(msg)
 	}
-	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 	<-forever
 }
