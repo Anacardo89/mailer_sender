@@ -16,7 +16,7 @@ type Config struct {
 }
 
 func (r *Config) Connect() *amqp.Connection {
-	url := fmt.Sprintf("amqp://%s:%s@%s%s/",
+	url := fmt.Sprintf("amqp://%s:%s@%s:%s/",
 		r.RabbitUser, r.RabbitPass, r.RabbitHost, r.RabbitPort)
 	logger.Info.Println(url)
 	conn, err := amqp.Dial(url)
