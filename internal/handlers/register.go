@@ -35,7 +35,7 @@ func SendRegisterEmail(d amqp.Delivery, m *mail.Config, c *smtp.Client, a *smtp.
 	var to []string
 	to = append(to, mailData.Email)
 	fromHeader := fmt.Sprintf("From: %s\n", m.SmtpUser)
-	toHeader := fmt.Sprintf("To: %s\n", to)
+	toHeader := fmt.Sprintf("To: %s\n", to[0])
 	subject := fmt.Sprintf("Subject: %s\n", mail_subject)
 	body := mail_body
 	message := []byte(fromHeader + toHeader + subject + "\n" + body)

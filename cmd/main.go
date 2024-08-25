@@ -56,11 +56,11 @@ func main() {
 	forever := make(chan struct{})
 	for msg := range msgs {
 		go func(m amqp.Delivery) {
-			switch msg.RoutingKey {
+			switch m.RoutingKey {
 			case "register_email":
-				handlers.SendRegisterEmail(msg, mail, client, &auth)
+				handlers.SendRegisterEmail(m, mail, client, &auth)
 			case "password_recover_email":
-				handlers.SendPasswordRecoveryEmail(msg, mail, client, &auth)
+				handlers.SendPasswordRecoveryEmail(m, mail, client, &auth)
 			}
 		}(msg)
 	}
