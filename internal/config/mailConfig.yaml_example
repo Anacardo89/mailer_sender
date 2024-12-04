@@ -1,0 +1,4 @@
+smtp_host: smtp.gmail.com
+smtp_port: '587'
+smtp_user: your_mail@mail.com
+smtp_pass: your mail app pass
