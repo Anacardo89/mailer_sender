@@ -6,7 +6,7 @@ This simple microservice sends mails to users of [lenic](https://github.com/Anac
 
 ## Setup:
 - install [go](https://go.dev/doc/install)
-- setup the yaml config files `interlnal/config`
+- setup the yaml config files `internal/config`
 - run `go mod tidy` to fetch dependencies
 - make sure [lenic](https://github.com/Anacardo89/lenic) is running
 - inside `/cmd` run `gp build` to compile, or `go run .` to run with out compiling
