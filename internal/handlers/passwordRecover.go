@@ -25,7 +25,7 @@ func SendPasswordRecoveryEmail(d amqp.Delivery, m *mail.Config, c *smtp.Client, 
 		logger.Error.Println(err)
 		return
 	}
-	err = m.ValidateMail(c, mailData.Email)
+	err = m.ValidateMail(mailData.Email)
 	if err != nil {
 		logger.Error.Println(err)
 		return
